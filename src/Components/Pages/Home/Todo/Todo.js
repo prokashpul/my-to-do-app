@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import Swal from "sweetalert2";
 import Loader from "../../../Sheard/Loader/Loader";
 import SingleTodo from "../singleTodo/SingleTodo";
 
@@ -14,7 +15,7 @@ const Todo = () => {
 
   const {
     isLoading,
-    error,
+
     data: todoData,
     refetch,
   } = useQuery("repoData", () =>
@@ -25,8 +26,9 @@ const Todo = () => {
     if (e.target.title.value !== "" || e.target.dis.value !== "") {
       const title = e.target.title.value;
       const description = e.target.description.value;
+      const checked = "no";
 
-      const todo = { title, description };
+      const todo = { title, description, checked };
       fetch("http://localhost:5000/todos", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -44,6 +46,42 @@ const Todo = () => {
   if (isLoading) {
     return <Loader></Loader>;
   }
+
+  //   delete handel
+  const deleteHandel = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/todos/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => refetch());
+      } else {
+        return;
+      }
+    });
+  };
+  //   delete handel
+  const updateHandel = (id) => {
+    const todoId = todoData.find((todo) => todo._id === id);
+    todoId.checked = "yes";
+    console.log(todoId.checked);
+    fetch(`http://localhost:5000/todos/${id}`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(todoId),
+    })
+      .then((res) => res.json())
+      .then((data) => refetch());
+  };
   return (
     <div className="hero min-h-screen bg-base-200 shadow-2xl">
       <div className="hero-content text-center">
@@ -71,7 +109,12 @@ const Todo = () => {
                 All ToDo List
               </h2>
               {todoData?.map((todo) => (
-                <SingleTodo key={todo._id} todo={todo}></SingleTodo>
+                <SingleTodo
+                  key={todo._id}
+                  todo={todo}
+                  deleteHandel={deleteHandel}
+                  updateHandel={updateHandel}
+                ></SingleTodo>
               ))}
             </div>
           </div>
