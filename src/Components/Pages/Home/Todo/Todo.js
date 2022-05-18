@@ -1,35 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "react-query";
 import Swal from "sweetalert2";
 import Loader from "../../../Sheard/Loader/Loader";
 import SingleTodo from "../singleTodo/SingleTodo";
 
 const Todo = () => {
-  //   const [todoData, setTodoData] = useState([]);
-
-  //   useEffect(() => {
-  //     fetch("http://localhost:5000/todos")
-  //       .then((res) => res.json())
-  //       .then((data) => setTodoData(data));
-  //   }, []);
-
   const {
     isLoading,
 
     data: todoData,
     refetch,
   } = useQuery("repoData", () =>
-    fetch("http://localhost:5000/todos").then((res) => res.json())
+    fetch("https://aqueous-shore-62965.herokuapp.com/todos").then((res) =>
+      res.json()
+    )
   );
   const handelSubmit = (e) => {
     e.preventDefault();
-    if (e.target.title.value !== "" || e.target.dis.value !== "") {
+    if (e.target.title.value || e.target.dis.value) {
       const title = e.target.title.value;
       const description = e.target.description.value;
       const checked = "no";
-
       const todo = { title, description, checked };
-      fetch("http://localhost:5000/todos", {
+      fetch("https://aqueous-shore-62965.herokuapp.com/todos", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(todo),
@@ -40,7 +33,7 @@ const Todo = () => {
       e.target.title.value = "";
       e.target.description.value = "";
     } else {
-      alert("error");
+      return;
     }
   };
   if (isLoading) {
@@ -59,7 +52,7 @@ const Todo = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/todos/${id}`, {
+        fetch(`https://aqueous-shore-62965.herokuapp.com/todos/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -74,7 +67,7 @@ const Todo = () => {
     const todoId = todoData.find((todo) => todo._id === id);
     todoId.checked = "yes";
     console.log(todoId.checked);
-    fetch(`http://localhost:5000/todos/${id}`, {
+    fetch(`https://aqueous-shore-62965.herokuapp.com/todos/${id}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(todoId),
