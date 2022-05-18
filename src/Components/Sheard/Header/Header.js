@@ -42,10 +42,10 @@ const Header = ({ children }) => {
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="menu p-4 overflow-y-auto w-80 bg-base-100">
           <li>
-            <a>Sidebar Item 1</a>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <a>Sidebar Item 2</a>
+            <NavLink to="/login">Login</NavLink>
           </li>
         </ul>
       </div>
