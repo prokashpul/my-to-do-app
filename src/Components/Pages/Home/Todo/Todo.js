@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Todo = () => {
   const [totoData, setTodoData] = useState([]);
@@ -7,6 +7,14 @@ const Todo = () => {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.dis.value;
+    const todo = { title, description };
+    fetch("http://localhost:5000/todos", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(todo),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
     setTodoData({ title, description });
     e.target.title.value = "";
     e.target.dis.value = "";
