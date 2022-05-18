@@ -24,15 +24,15 @@ const Header = ({ children }) => {
               </svg>
             </label>
           </div>
-          <div className="flex-1 px-2 mx-2">ToDo</div>
+          <div className="flex-1 text-2xl text-primary px-2 mx-2">ToDo</div>
           <div className="flex-none hidden lg:block">
             <ul className="menu menu-horizontal">
               <li>
                 <NavLink to="/">Home</NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink to="/login">Login</NavLink>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -44,9 +44,9 @@ const Header = ({ children }) => {
           <li>
             <NavLink to="/">Home</NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/login">Login</NavLink>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>
