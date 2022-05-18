@@ -1,25 +1,49 @@
 import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import Loader from "../../../Sheard/Loader/Loader";
+import SingleTodo from "../singleTodo/SingleTodo";
 
 const Todo = () => {
-  const [totoData, setTodoData] = useState([]);
+  //   const [todoData, setTodoData] = useState([]);
 
+  //   useEffect(() => {
+  //     fetch("http://localhost:5000/todos")
+  //       .then((res) => res.json())
+  //       .then((data) => setTodoData(data));
+  //   }, []);
+
+  const {
+    isLoading,
+    error,
+    data: todoData,
+    refetch,
+  } = useQuery("repoData", () =>
+    fetch("http://localhost:5000/todos").then((res) => res.json())
+  );
   const handelSubmit = (e) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const description = e.target.dis.value;
-    const todo = { title, description };
-    fetch("http://localhost:5000/todos", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(todo),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-    setTodoData({ title, description });
-    e.target.title.value = "";
-    e.target.dis.value = "";
+    if (e.target.title.value !== "" || e.target.dis.value !== "") {
+      const title = e.target.title.value;
+      const description = e.target.description.value;
+
+      const todo = { title, description };
+      fetch("http://localhost:5000/todos", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(todo),
+      })
+        .then((res) => res.json())
+        .then((data) => refetch());
+
+      e.target.title.value = "";
+      e.target.description.value = "";
+    } else {
+      alert("error");
+    }
   };
-  console.log(totoData);
+  if (isLoading) {
+    return <Loader></Loader>;
+  }
   return (
     <div className="hero min-h-screen bg-base-200 shadow-2xl">
       <div className="hero-content text-center">
@@ -42,12 +66,13 @@ const Todo = () => {
                 ADD TODO
               </button>
             </form>
-
-            <div class="card bg-base-100 shadow-xl">
-              <div class="card-body">
-                <h2>title</h2>
-                <p>add</p>
-              </div>
+            <div className="my-10">
+              <h2 className="text-center font-bold text-2xl text-primary mb-10">
+                All ToDo List
+              </h2>
+              {todoData?.map((todo) => (
+                <SingleTodo key={todo._id} todo={todo}></SingleTodo>
+              ))}
             </div>
           </div>
         </div>
