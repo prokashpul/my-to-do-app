@@ -1,13 +1,21 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Loader from "../../../Sheard/Loader/Loader";
 import SingleTodo from "../singleTodo/SingleTodo";
 
 const Todo = () => {
   const {
-    isLoading,
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm();
 
+  const {
+    isLoading,
     data: todoData,
     refetch,
   } = useQuery("repoData", () =>
@@ -15,27 +23,26 @@ const Todo = () => {
       res.json()
     )
   );
-  const handelSubmit = (e) => {
-    e.preventDefault();
-    if (e.target.title.value || e.target.dis.value) {
-      const title = e.target.title.value;
-      const description = e.target.description.value;
-      const checked = "no";
-      const todo = { title, description, checked };
-      fetch("https://aqueous-shore-62965.herokuapp.com/todos", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(todo),
-      })
-        .then((res) => res.json())
-        .then((data) => refetch());
 
-      e.target.title.value = "";
-      e.target.description.value = "";
-    } else {
-      return;
-    }
+  //submit todo
+  const onSubmit = (data) => {
+    const title = data.title;
+    const description = data.description;
+    const checked = "no";
+    const todo = { title, description, checked };
+    fetch("https://aqueous-shore-62965.herokuapp.com/todos", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(todo),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        refetch();
+        reset();
+        toast.success("Successfully create your Todo!!");
+      });
   };
+
   if (isLoading) {
     return <Loader></Loader>;
   }
@@ -81,18 +88,23 @@ const Todo = () => {
         <div className="card md:w-[50vw] min-h-[100vh] bg-base-100 shadow-xl">
           <div className="card-body ">
             <h2 className="card-title mb-5 justify-center">Add ToDo !!</h2>
-            <form onSubmit={handelSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 type="text"
                 name="title"
                 placeholder="Title"
                 className="input input-bordered input-primary w-full mb-5"
+                {...register("title", { required: true })}
               />
+              {errors.title?.type === "required" && "Title field is required"}
               <textarea
                 name="description"
                 className="textarea textarea-primary w-full mb-5"
                 placeholder="Description"
+                {...register("description", { required: true })}
               ></textarea>
+              {errors.description?.type === "required" &&
+                "Title field is required"}
               <button type="submit" className="btn btn-primary">
                 ADD TODO
               </button>
@@ -101,7 +113,7 @@ const Todo = () => {
               <h2 className="text-center font-bold text-2xl text-primary mb-10">
                 All ToDo List
               </h2>
-              {todoData?.map((todo) => (
+              {[...todoData]?.reverse()?.map((todo) => (
                 <SingleTodo
                   key={todo._id}
                   todo={todo}

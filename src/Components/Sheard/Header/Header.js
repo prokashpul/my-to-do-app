@@ -24,11 +24,15 @@ const Header = ({ children }) => {
               </svg>
             </label>
           </div>
-          <div className="flex-1 text-2xl text-primary px-2 mx-2">ToDo</div>
-          <div className="flex-none hidden lg:block">
+          <div className="flex-1 text-3xl font-bold text-primary px-2 mx-2">
+            ToDo
+          </div>
+          <div className="flex-none hidden lg:block lg:px-10">
             <ul className="menu menu-horizontal">
               <li>
-                <NavLink to="/">Home</NavLink>
+                <NavLink className="rounded-xl text-white" to="/">
+                  Home
+                </NavLink>
               </li>
               {/* <li>
                 <NavLink to="/login">Login</NavLink>
