@@ -83,11 +83,13 @@ const Todo = () => {
       .then((data) => refetch());
   };
   return (
-    <div className="hero min-h-screen bg-base-200 shadow-2xl">
-      <div className="hero-content text-center">
+    <div className="hero min-h-screen bg-base-200 shadow-2xl ">
+      <div className="hero-content text-center mt-10">
         <div className="card md:w-[50vw] min-h-[100vh] bg-base-100 shadow-xl">
           <div className="card-body ">
-            <h2 className="card-title mb-5 justify-center">Add ToDo !!</h2>
+            <h2 className="card-title mb-5 justify-center font-bold text-2xl text-primary">
+              Add ToDo !!
+            </h2>
             <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 type="text"
@@ -96,16 +98,21 @@ const Todo = () => {
                 className="input input-bordered input-primary w-full mb-5"
                 {...register("title", { required: true })}
               />
-              {errors.title?.type === "required" && "Title field is required"}
+              {errors.title?.type === "required" && (
+                <p className="text-red-500 mb-5">Title field is required</p>
+              )}
               <textarea
                 name="description"
                 className="textarea textarea-primary w-full mb-5"
                 placeholder="Description"
                 {...register("description", { required: true })}
               ></textarea>
-              {errors.description?.type === "required" &&
-                "Title field is required"}
-              <button type="submit" className="btn btn-primary">
+              {errors.description?.type === "required" && (
+                <p className="text-red-500 mb-5">
+                  description field is required
+                </p>
+              )}
+              <button type="submit" className="btn btn-primary text-white">
                 ADD TODO
               </button>
             </form>
